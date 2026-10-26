@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://bf47g6vkbrfil"]
+
+[ext_resource type="PackedScene" uid="uid://4xx84vj8cpc5" path="res://Scenes/player.tscn" id="1_ebmjs"]
+[ext_resource type="Script" uid="uid://dht55bbcvb0xk" path="res://Scripts/MapScanner/map_scanner.gd" id="2_scanner"]
+[ext_resource type="Script" uid="uid://evd7s2t0p4ri" path="res://Scripts/MapScanner/map_definition.gd" id="3_def"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ebmjs"]
+size = Vector2(1152, 57)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_parede"]
+size = Vector2(32, 1296)
+
+[sub_resource type="Resource" id="Resource_fase01"]
+script = ExtResource("3_def")
+map_id = &"fase_01"
+world_bounds = Rect2(0, 0, 1152, 648)
+cell_size = 64
+
+[node name="Node2D" type="Node2D" unique_id=1917497515]
+position = Vector2(527, 365)
+
+[node name="Player" parent="." unique_id=1899061985 groups=["map_player"] instance=ExtResource("1_ebmjs")]
+position = Vector2(-491, 204)
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+limit_left = 0
+limit_top = 0
+limit_right = 1152
+limit_bottom = 648
+
+[node name="Chão" type="StaticBody2D" parent="." unique_id=1795155952 groups=["map_static_terrain"]]
+position = Vector2(-388, 212)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chão" unique_id=1983156295]
+position = Vector2(437, 42.5)
+shape = SubResource("RectangleShape2D_ebmjs")
+
+[node name="Polygon2D" type="Polygon2D" parent="Chão" unique_id=583453280]
+position = Vector2(0.11999512, -0.5090904)
+scale = Vector2(1.0008695, 1.0363636)
+polygon = PackedVector2Array(-138.99913, 69, 1012.0001, 69, 1012, 14, -138.99913, 14)
+
+[node name="ParedeEsquerda" type="StaticBody2D" parent="." groups=["map_static_terrain"]]
+position = Vector2(-543, -41)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ParedeEsquerda"]
+shape = SubResource("RectangleShape2D_parede")
+
+[node name="ParedeDireita" type="StaticBody2D" parent="." groups=["map_static_terrain"]]
+position = Vector2(641, -41)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ParedeDireita"]
+shape = SubResource("RectangleShape2D_parede")
+
+[node name="MapScanner" type="Node2D" parent="." unique_id=2032147729]
+script = ExtResource("2_scanner")
+definition = SubResource("Resource_fase01")

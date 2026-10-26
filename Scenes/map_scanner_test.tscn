@@ -1,0 +1,474 @@
+[gd_scene format=3 uid="uid://hyor3cbp13yr"]
+
+[ext_resource type="PackedScene" uid="uid://4xx84vj8cpc5" path="res://Scenes/player.tscn" id="1_player"]
+[ext_resource type="Script" uid="uid://dht55bbcvb0xk" path="res://Scripts/MapScanner/map_scanner.gd" id="2_scanner"]
+[ext_resource type="Script" uid="uid://evd7s2t0p4ri" path="res://Scripts/MapScanner/map_definition.gd" id="3_def"]
+[ext_resource type="Script" uid="uid://dtodnf6nbfobn" path="res://Scripts/MapScanner/Test/test_collectible.gd" id="s_coin"]
+[ext_resource type="Script" uid="uid://dusgqq4231g83" path="res://Scripts/MapScanner/Test/test_door.gd" id="s_door"]
+[ext_resource type="Script" uid="uid://dqo2vuowmt7l3" path="res://Scripts/MapScanner/Test/test_enemy.gd" id="s_enemy"]
+[ext_resource type="Script" uid="uid://b0yqv8gsmm3no" path="res://Scripts/MapScanner/Test/test_moving_platform.gd" id="s_move"]
+[ext_resource type="Script" uid="uid://bptndq2ny2x0b" path="res://Scripts/MapScanner/secret_area.gd" id="s_secret_area"]
+[ext_resource type="Script" uid="uid://ypnp0apkv0xd" path="res://Scripts/MapScanner/secret_condition.gd" id="s_secret_cond"]
+[ext_resource type="Script" uid="uid://bq7p8435216mm" path="res://Scripts/MapScanner/secret_definition.gd" id="s_secret_def"]
+[ext_resource type="Script" uid="uid://bm03g7yrw7uyv" path="res://Scripts/MapScanner/Test/test_breakable_wall.gd" id="s_wall"]
+[ext_resource type="Texture2D" uid="uid://cqo2vuns1gw6y" path="res://Assets/Wall.jpg" id="t_wall"]
+[ext_resource type="Texture2D" uid="uid://hgbut4eqlor4" path="res://Assets/Wall_1.jpg" id="t_wall1"]
+
+[sub_resource type="RectangleShape2D" id="Shape_0"]
+size = Vector2(4096, 64)
+
+[sub_resource type="RectangleShape2D" id="Shape_1"]
+size = Vector2(64, 1088)
+
+[sub_resource type="RectangleShape2D" id="Shape_2"]
+size = Vector2(64, 1088)
+
+[sub_resource type="RectangleShape2D" id="Shape_3"]
+size = Vector2(300, 24)
+
+[sub_resource type="RectangleShape2D" id="Shape_4"]
+size = Vector2(300, 24)
+
+[sub_resource type="RectangleShape2D" id="Shape_5"]
+size = Vector2(240, 24)
+
+[sub_resource type="RectangleShape2D" id="Shape_6"]
+size = Vector2(400, 24)
+
+[sub_resource type="RectangleShape2D" id="Shape_7"]
+size = Vector2(300, 24)
+
+[sub_resource type="RectangleShape2D" id="Shape_8"]
+size = Vector2(300, 24)
+
+[sub_resource type="RectangleShape2D" id="Shape_9"]
+size = Vector2(360, 24)
+
+[sub_resource type="RectangleShape2D" id="Shape_10"]
+size = Vector2(160, 24)
+
+[sub_resource type="AtlasTexture" id="Atlas_plataforma"]
+atlas = ExtResource("t_wall1")
+region = Rect2(120, 0, 640, 96)
+
+[sub_resource type="RectangleShape2D" id="Shape_11"]
+size = Vector2(32, 160)
+
+[sub_resource type="AtlasTexture" id="Atlas_porta"]
+atlas = ExtResource("t_wall1")
+region = Rect2(120, 0, 128, 640)
+
+[sub_resource type="RectangleShape2D" id="Shape_12"]
+size = Vector2(48, 160)
+
+[sub_resource type="RectangleShape2D" id="Shape_teto"]
+size = Vector2(1120, 32)
+
+[sub_resource type="CircleShape2D" id="Shape_coin"]
+
+[sub_resource type="Resource" id="Cond_parede"]
+script = ExtResource("s_secret_cond")
+type = 1
+node_path = NodePath("Level/ParedeDestrutivel")
+
+[sub_resource type="Resource" id="Cond_porta"]
+script = ExtResource("s_secret_cond")
+type = 2
+node_path = NodePath("Level/Porta")
+property = &"aberta"
+
+[sub_resource type="Resource" id="Cond_entrada"]
+script = ExtResource("s_secret_cond")
+area = Rect2(2640, 864, 336, 160)
+
+[sub_resource type="Resource" id="Cond_porta_e_entrada"]
+script = ExtResource("s_secret_cond")
+type = 3
+children = Array[Resource]([SubResource("Cond_porta"), SubResource("Cond_entrada")])
+
+[sub_resource type="Resource" id="Cond_sala"]
+script = ExtResource("s_secret_cond")
+type = 4
+children = Array[Resource]([SubResource("Cond_parede"), SubResource("Cond_porta_e_entrada")])
+
+[sub_resource type="Resource" id="Secret_sala"]
+script = ExtResource("s_secret_def")
+id = &"sala_secreta"
+condition = SubResource("Cond_sala")
+
+[sub_resource type="Resource" id="Resource_def"]
+script = ExtResource("3_def")
+map_id = &"teste_experimental"
+secrets = Array[ExtResource("s_secret_def")]([SubResource("Secret_sala")])
+
+[node name="MapScannerTest" type="Node2D" unique_id=1185865578]
+
+[node name="Level" type="Node2D" parent="." unique_id=1387393628]
+
+[node name="Chao" type="StaticBody2D" parent="Level" unique_id=2013049376 groups=["map_static_terrain"]]
+position = Vector2(2048, 1056)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Chao" unique_id=1936539116]
+shape = SubResource("Shape_0")
+
+[node name="Visual" type="ColorRect" parent="Level/Chao" unique_id=1738246743]
+offset_left = -2048.0
+offset_top = -32.0
+offset_right = 2048.0
+offset_bottom = 32.0
+mouse_filter = 2
+color = Color(0.18, 0.2, 0.26, 1)
+
+[node name="ParedeEsq" type="StaticBody2D" parent="Level" unique_id=1060499202 groups=["map_static_terrain"]]
+position = Vector2(-32, 544)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/ParedeEsq" unique_id=339730600]
+shape = SubResource("Shape_1")
+
+[node name="Visual" type="ColorRect" parent="Level/ParedeEsq" unique_id=2092190185]
+offset_left = -32.0
+offset_top = -544.0
+offset_right = 32.0
+offset_bottom = 544.0
+mouse_filter = 2
+color = Color(0.18, 0.2, 0.26, 1)
+
+[node name="ParedeDir" type="StaticBody2D" parent="Level" unique_id=1439970976 groups=["map_static_terrain"]]
+position = Vector2(4128, 544)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/ParedeDir" unique_id=768899986]
+shape = SubResource("Shape_2")
+
+[node name="Visual" type="ColorRect" parent="Level/ParedeDir" unique_id=1436304786]
+offset_left = -32.0
+offset_top = -544.0
+offset_right = 32.0
+offset_bottom = 544.0
+mouse_filter = 2
+color = Color(0.18, 0.2, 0.26, 1)
+
+[node name="Plataforma1" type="StaticBody2D" parent="Level" unique_id=880114962 groups=["map_static_terrain"]]
+position = Vector2(550, 956)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Plataforma1" unique_id=41607666]
+shape = SubResource("Shape_3")
+
+[node name="Visual" type="ColorRect" parent="Level/Plataforma1" unique_id=1407190101]
+offset_left = -150.0
+offset_top = -12.0
+offset_right = 150.0
+offset_bottom = 12.0
+mouse_filter = 2
+color = Color(0.3, 0.34, 0.42, 1)
+
+[node name="Plataforma2" type="StaticBody2D" parent="Level" unique_id=1713380360 groups=["map_static_terrain"]]
+position = Vector2(930, 876)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Plataforma2" unique_id=1218102527]
+shape = SubResource("Shape_4")
+
+[node name="Visual" type="ColorRect" parent="Level/Plataforma2" unique_id=380928148]
+offset_left = -150.0
+offset_top = -12.0
+offset_right = 150.0
+offset_bottom = 12.0
+mouse_filter = 2
+color = Color(0.3, 0.34, 0.42, 1)
+
+[node name="Plataforma3" type="StaticBody2D" parent="Level" unique_id=1973567131 groups=["map_static_terrain"]]
+position = Vector2(1280, 796)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Plataforma3" unique_id=361683605]
+shape = SubResource("Shape_5")
+
+[node name="Visual" type="ColorRect" parent="Level/Plataforma3" unique_id=1354338407]
+offset_left = -120.0
+offset_top = -12.0
+offset_right = 120.0
+offset_bottom = 12.0
+mouse_filter = 2
+color = Color(0.3, 0.34, 0.42, 1)
+
+[node name="Plataforma4" type="StaticBody2D" parent="Level" unique_id=279061392 groups=["map_static_terrain"]]
+position = Vector2(2200, 636)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Plataforma4" unique_id=515955324]
+shape = SubResource("Shape_6")
+
+[node name="Visual" type="ColorRect" parent="Level/Plataforma4" unique_id=202966617]
+offset_left = -200.0
+offset_top = -12.0
+offset_right = 200.0
+offset_bottom = 12.0
+mouse_filter = 2
+color = Color(0.3, 0.34, 0.42, 1)
+
+[node name="Plataforma5" type="StaticBody2D" parent="Level" unique_id=1252617664 groups=["map_static_terrain"]]
+position = Vector2(2630, 716)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Plataforma5" unique_id=1410424150]
+shape = SubResource("Shape_7")
+
+[node name="Visual" type="ColorRect" parent="Level/Plataforma5" unique_id=1577565982]
+offset_left = -150.0
+offset_top = -12.0
+offset_right = 150.0
+offset_bottom = 12.0
+mouse_filter = 2
+color = Color(0.3, 0.34, 0.42, 1)
+
+[node name="Plataforma6" type="StaticBody2D" parent="Level" unique_id=1070569610 groups=["map_static_terrain"]]
+position = Vector2(3010, 636)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Plataforma6" unique_id=1485560960]
+shape = SubResource("Shape_8")
+
+[node name="Visual" type="ColorRect" parent="Level/Plataforma6" unique_id=290774499]
+offset_left = -150.0
+offset_top = -12.0
+offset_right = 150.0
+offset_bottom = 12.0
+mouse_filter = 2
+color = Color(0.3, 0.34, 0.42, 1)
+
+[node name="Plataforma7" type="StaticBody2D" parent="Level" unique_id=1586513647 groups=["map_static_terrain"]]
+position = Vector2(3420, 556)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Plataforma7" unique_id=2129875888]
+shape = SubResource("Shape_9")
+
+[node name="Visual" type="ColorRect" parent="Level/Plataforma7" unique_id=1650105756]
+offset_left = -180.0
+offset_top = -12.0
+offset_right = 180.0
+offset_bottom = 12.0
+mouse_filter = 2
+color = Color(0.3, 0.34, 0.42, 1)
+
+[node name="PlataformaMovel" type="AnimatableBody2D" parent="Level" unique_id=115136470 groups=["map_moving_platforms"]]
+position = Vector2(1520, 716)
+script = ExtResource("s_move")
+distancia = 340.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/PlataformaMovel" unique_id=1701941864]
+shape = SubResource("Shape_10")
+
+[node name="Visual" type="TextureRect" parent="Level/PlataformaMovel" unique_id=659689215]
+offset_left = -80.0
+offset_top = -12.0
+offset_right = 80.0
+offset_bottom = 12.0
+mouse_filter = 2
+texture = SubResource("Atlas_plataforma")
+expand_mode = 1
+
+[node name="Porta" type="StaticBody2D" parent="Level" unique_id=1683879175 groups=["map_dynamic_terrain"]]
+position = Vector2(2600, 944)
+script = ExtResource("s_door")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Porta" unique_id=1286545193]
+shape = SubResource("Shape_11")
+
+[node name="Visual" type="TextureRect" parent="Level/Porta" unique_id=658766136]
+offset_left = -16.0
+offset_top = -80.0
+offset_right = 16.0
+offset_bottom = 80.0
+mouse_filter = 2
+texture = SubResource("Atlas_porta")
+expand_mode = 1
+
+[node name="ParedeDestrutivel" type="StaticBody2D" parent="Level" unique_id=1767838615 groups=["map_dynamic_terrain"]]
+position = Vector2(3000, 944)
+script = ExtResource("s_wall")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/ParedeDestrutivel" unique_id=1854531387]
+shape = SubResource("Shape_12")
+
+[node name="Visual" type="TextureRect" parent="Level/ParedeDestrutivel" unique_id=1780018148]
+texture_repeat = 2
+offset_left = -24.0
+offset_top = -80.0
+offset_right = 216.0
+offset_bottom = 720.0
+scale = Vector2(0.2, 0.2)
+mouse_filter = 2
+texture = ExtResource("t_wall")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="TetoSalaSecreta" type="StaticBody2D" parent="Level" unique_id=1460769572 groups=["map_static_terrain"]]
+position = Vector2(3536, 848)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/TetoSalaSecreta" unique_id=1756352301]
+shape = SubResource("Shape_teto")
+
+[node name="Visual" type="TextureRect" parent="Level/TetoSalaSecreta" unique_id=514904729]
+texture_repeat = 2
+offset_left = -560.0
+offset_top = -16.0
+offset_right = 5040.0
+offset_bottom = 144.0
+scale = Vector2(0.2, 0.2)
+mouse_filter = 2
+texture = ExtResource("t_wall")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Entidades" type="Node2D" parent="." unique_id=1127144036]
+
+[node name="Inimigo1" type="Node2D" parent="Entidades" unique_id=987830138 groups=["map_enemies"]]
+position = Vector2(1300, 1008)
+script = ExtResource("s_enemy")
+
+[node name="Visual" type="ColorRect" parent="Entidades/Inimigo1" unique_id=1882226954]
+offset_left = -12.0
+offset_top = -16.0
+offset_right = 12.0
+offset_bottom = 16.0
+mouse_filter = 2
+color = Color(0.85, 0.2, 0.2, 1)
+
+[node name="Inimigo2" type="Node2D" parent="Entidades" unique_id=1294611167 groups=["map_enemies"]]
+position = Vector2(2200, 608)
+script = ExtResource("s_enemy")
+distancia = 150.0
+
+[node name="Visual" type="ColorRect" parent="Entidades/Inimigo2" unique_id=209472041]
+offset_left = -12.0
+offset_top = -16.0
+offset_right = 12.0
+offset_bottom = 16.0
+mouse_filter = 2
+color = Color(0.85, 0.2, 0.2, 1)
+
+[node name="Inimigo3" type="Node2D" parent="Entidades" unique_id=2048707162 groups=["map_enemies"]]
+position = Vector2(2800, 1008)
+script = ExtResource("s_enemy")
+distancia = 100.0
+
+[node name="Visual" type="ColorRect" parent="Entidades/Inimigo3" unique_id=2099819304]
+offset_left = -12.0
+offset_top = -16.0
+offset_right = 12.0
+offset_bottom = 16.0
+mouse_filter = 2
+color = Color(0.85, 0.2, 0.2, 1)
+
+[node name="Inimigo4" type="Node2D" parent="Entidades" unique_id=1718590887 groups=["map_enemies"]]
+position = Vector2(3700, 1008)
+script = ExtResource("s_enemy")
+distancia = 150.0
+
+[node name="Visual" type="ColorRect" parent="Entidades/Inimigo4" unique_id=706412925]
+offset_left = -12.0
+offset_top = -16.0
+offset_right = 12.0
+offset_bottom = 16.0
+mouse_filter = 2
+color = Color(0.85, 0.2, 0.2, 1)
+
+[node name="Colecionavel1" type="Area2D" parent="Entidades" unique_id=309462236 groups=["map_collectibles"]]
+position = Vector2(930, 840)
+script = ExtResource("s_coin")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Entidades/Colecionavel1" unique_id=196737594]
+shape = SubResource("Shape_coin")
+
+[node name="Visual" type="ColorRect" parent="Entidades/Colecionavel1" unique_id=374412235]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+rotation = 0.785398
+pivot_offset = Vector2(8, 8)
+mouse_filter = 2
+color = Color(0.3, 0.9, 0.6, 1)
+
+[node name="Colecionavel2" type="Area2D" parent="Entidades" unique_id=152715536 groups=["map_collectibles"]]
+position = Vector2(2760, 1000)
+script = ExtResource("s_coin")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Entidades/Colecionavel2" unique_id=181704322]
+shape = SubResource("Shape_coin")
+
+[node name="Visual" type="ColorRect" parent="Entidades/Colecionavel2" unique_id=736046171]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+rotation = 0.785398
+pivot_offset = Vector2(8, 8)
+mouse_filter = 2
+color = Color(0.3, 0.9, 0.6, 1)
+
+[node name="Colecionavel3" type="Area2D" parent="Entidades" unique_id=163702762 groups=["map_collectibles"]]
+position = Vector2(3420, 520)
+script = ExtResource("s_coin")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Entidades/Colecionavel3" unique_id=363125240]
+shape = SubResource("Shape_coin")
+
+[node name="Visual" type="ColorRect" parent="Entidades/Colecionavel3" unique_id=1724301738]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+rotation = 0.785398
+pivot_offset = Vector2(8, 8)
+mouse_filter = 2
+color = Color(0.3, 0.9, 0.6, 1)
+
+[node name="Colecionavel4" type="Area2D" parent="Entidades" unique_id=1573588152 groups=["map_collectibles"]]
+position = Vector2(3400, 1000)
+script = ExtResource("s_coin")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Entidades/Colecionavel4" unique_id=445069452]
+shape = SubResource("Shape_coin")
+
+[node name="Visual" type="ColorRect" parent="Entidades/Colecionavel4" unique_id=1048964356]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+rotation = 0.785398
+pivot_offset = Vector2(8, 8)
+mouse_filter = 2
+color = Color(0.3, 0.9, 0.6, 1)
+
+[node name="SalaSecreta" type="Node2D" parent="." unique_id=2115041034]
+position = Vector2(3000, 836)
+script = ExtResource("s_secret_area")
+secret_id = &"sala_secreta"
+size = Vector2(1100, 192)
+
+[node name="Player" parent="." unique_id=403504007 groups=["map_player"] instance=ExtResource("1_player")]
+position = Vector2(160, 1020)
+
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=754890423]
+position = Vector2(0, -32)
+zoom = Vector2(2, 2)
+limit_left = 0
+limit_top = 0
+limit_right = 4096
+limit_bottom = 1088
+
+[node name="MapScanner" type="Node2D" parent="." unique_id=1874401732]
+script = ExtResource("2_scanner")
+definition = SubResource("Resource_def")
+debug_keys = true
+
+[node name="Ajuda" type="CanvasLayer" parent="." unique_id=1721836883]
+
+[node name="Label" type="Label" parent="Ajuda" unique_id=1502013854]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -84.0
+offset_right = 900.0
+offset_bottom = -12.0
+grow_vertical = 0
+text = "Degraus de 80 px: use o pulo duplo (Espaço 2x) | Q = atacar (mata inimigo / quebra parede de perto)
+F6 = abrir/fechar porta | F7 = quebrar parede | F9 = apagar progresso e bloquear segredos
+Sala secreta (depois da parede): libera se a parede cair OU (porta aberta E você passar pela porta)"
